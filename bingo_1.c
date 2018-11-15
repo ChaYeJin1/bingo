@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_NUMBER N
+#define N
 #define SIZE N*N
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 
 void initiate_bingo(int *arr);
+void swap(int *i, int *j);
 void print_bingo(int arr[N][N]);
 void process_bingo(int arr[N][N]);
 void check_bingo(int arr[N][N], int number);
@@ -15,27 +16,32 @@ int get_number_byMe(int number);
 int get_number_byCom(int number);
 int count_bingo(int [N][N], int num);
 int count = 0;
-int bingo_byMe(int arr[N][N]);
-int bingo_byCom(int arr[N][N]);
 
- 
 void initiate_bingo(int *arr){
-	int x, y;
-	srand(time(NULL));
-	for(x=0; x<SIZE; x++)
-	{
-		for(y=0; y<SIZE; y++)
-		{
-			arr[x][y]=rand()%MAX_NUMBER;
-		}
-	}
+	int n = 0;
+	
+	do{
+		array[n] = n + 1;
+	}while(n<SIZE);
+	
+	do{
+		swap(&arr[n], &arr[rand()%SIZE]);
+	}while(n<SIZE);
+		
+}
+
+void swap(int *i, int *j){
+	int temp;
+	temp = *i;
+	*i = *j;
+	*j = temp;
 }
 
 void print_bingo(int arr[N][N]){
 	int x,y;
 	
-	for(x=0; x<SIZE; x++){
-		for(y=0; y<SIZE; y++){
+	for(x=0; x<N; x++){
+		for(y=0; y<N; y++){
 			printf("\n\n", arr[x][y]);
 		}
 	}
@@ -52,7 +58,7 @@ int get_number_byMe(int number){
 			  printf("이미 입력한 숫자입니다. 다시 입력하시오 : ");
 			  scanf("%d", &number);
 			}
-	}while(number<N*N);
+	}while(number<SIZE);
 	
 	printf("사용자가 %d를 선택하였습니다 : \n", number);
 	
@@ -65,7 +71,7 @@ int get_number_byCom(int number){
 	int try_again;
 	
 	do{
-	    number = rand() % N*N + 1;
+	    number = rand() % SIZE + 1;
 		if(checked[x] == number){
 			try_again = 0; //try_again=0이면 다시 시도 
 			break;
