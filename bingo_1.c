@@ -1,32 +1,67 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N
-#define SIZE N*N
+#define N 5
+#define N2 25
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
 
 
-void initiate_bingo(int *arr);
+void initiate_bingo(); //빙고 테이블을 초기에 만들어줌 
+void set_rand(int *arr);
 void swap(int *i, int *j);
-void print_bingo(int arr[N][N]);
-void process_bingo(int arr[N][N]);
-void check_bingo(int arr[N][N], int number);
+void print_bingo(int arr[5][5]); //빙고 테이블 현재 상황을 화면에 출력 
+void erase_bingo(int arr[5][5], int number);
+void check_bingo(int arr[5][5]); 
 void print_winner(int winner);
-int get_number_byMe(int number);
-int get_number_byCom(int number);
-int count_bingo(int [N][N], int num);
+int get_number_byMe(int n); //내가 빙고 번호 입력 선택 
+int get_number_byCom(int n); //컴퓨터가 임의로 빙고 번호 선택 
+int count_bingo(int [5][5]); //빙고 테이블이 채운 가로/세로/대각선 줄 수를 계산해서 반환 
 int count = 0;
+int checked[25];
+int bingo_byMe [5][5];
+int bingo_byCom [5][5]; 
 
-void initiate_bingo(int *arr){
-	int n = 0;
+void main(){
+	int number, winner_Me, winner_Com;
+	initiate_bingo();
+	
+    do{
+    	printf("내 빙고판\n");
+    	print_bingo(bingo_byMe);
+    	number = get_number_byMe(number);
+    	erase_bingo(bingo_byMe, number);
+    	erase_bingo(bingo_byCom, number);
+    	number = get_number_byCom(number);
+    	erase_bingo(bingo_byCom, number);
+    	erase_bingo(bingo_byMe, number);
+    	
+    	winner_Me = check_bingo(bingo_byMe);
+    	winner_Com = check_bingo(bingo_byCom);
+	}while((winner_Me == 0) && (winner_Com == 0)); //0은 아직 빙고 완성이 안 된 것을 의미
+	
+    printf("내 빙고판\n");
+	print_bingo(bingo_byMe);
+	printf("컴퓨터 빙고판\n"); 
+	print_bingo(bingo_byCom);   
+  
+}
+
+void initiate_bingo(){
+	srand((unsigned)time(NULL));
+	set_rand((int*)bingo_byMe);
+	set_rand((int*)bingo_byCom);
+}
+
+void set_rand(int *arr){
+	int n;
 	
 	do{
-		array[n] = n + 1;
-	}while(n<SIZE);
+		arr[n] = n + 1;
+	}while(n<N2);
 	
 	do{
-		swap(&arr[n], &arr[rand()%SIZE]);
-	}while(n<SIZE);
+		swap(&arr[n], &arr[rand()%25]);
+	}while(n<N2);
 		
 }
 
@@ -37,58 +72,73 @@ void swap(int *i, int *j){
 	*j = temp;
 }
 
-void print_bingo(int arr[N][N]){
+void print_bingo(int arr[5][5]){
 	int x,y;
 	
 	for(x=0; x<N; x++){
 		for(y=0; y<N; y++){
-			printf("\n\n", arr[x][y]);
+			printf("%d",arr[x][y]);
 		}
+	    printf("\n\n");
 	}
 }
 	
-int get_number_byMe(int number){
+int get_number_byMe(int n){
 	int number;
-	int x;
-	
+	int x, error;
     do{
-			printf("N의 제곱까지의 숫자를 입력하시오 : ");
+            error = 0;  	
+			printf("1~25까지의 숫자를입력하시오 : ");
 			scanf("%d", &number); 
-			 if(checked[x] == number){
-			  printf("이미 입력한 숫자입니다. 다시 입력하시오 : ");
-			  scanf("%d", &number);
+			 if(number<1 || number>25){
+			 error = 1;
 			}
-	}while(number<SIZE);
+			if(error == 0){
+	    	for(x=0; x<count; x++){
+	    		if(checked[x] == number){
+			    error = 1;
+			    break;
+	        	}    
+			}
+	}while(error == 1);
 	
+	checked[count++] = number;
 	printf("사용자가 %d를 선택하였습니다 : \n", number);
 	
-	return number;
+    }
+    return number;
 }
 
-int get_number_byCom(int number){
+int get_number_byCom(int n){
 	int number;
-	int x;
+	int x, error;
 	int try_again;
 	
 	do{
-	    number = rand() % SIZE + 1;
-		if(checked[x] == number){
-			try_again = 0; //try_again=0이면 다시 시도 
-			break;
-		} 
-	}while(try_again == 0);
+	    number = rand() % 25 + 1;
+	    if(error == 0){
+	    	for(x=0; x<count; x++){
+	    		if(checked[x] == number){
+			    error = 1;
+			    break;
+	        	}    
+			}
+		}
+		
+	}while(error == 1);
 	
+	checked[count++] = number;
 	printf("컴퓨터가 %d를 선택하였습니다 : \n", number);
 	
 	return number;
 }
 	
 		
-void check_bingo(int arr[N][N], int input_number){
+void erase_bingo(int arr[N][N], int input_number){
 	int x,y;
 	
-	for(x=0; x<SIZE; x++){
-		for(y=0; y<SIZE; y++){
+	for(x=0; x<N; x++){
+		for(y=0; y<N; y++){
 			if(arr[x][y] == input_number){
 				arr[x][y] = -1;
 			}
@@ -106,49 +156,49 @@ void print_winner(int winner){
 		    break;
 		case 3 :
 		    printf("비겼습니다\n");
-			break;		
+			break;
+		default :
+		    printf("에러입니다\n");
+			break;			
 	}
 }
 
-int count_bingo(int [N][N], int num){
-	int bingo = 0;
-	int x, y;
-	int horizontal_line, vertical_line, diagonal_line_leftside, diagonal_line_rightside;
+int count_bingo(int arr[5][5]){
+	int line = 0;
+	int x, y, xy;
 	
-	for(x=0; x<num; x++){
-		horizontal_line = 0;
-		for(y=0; y<num; y++){
-			if(arr[N][N] == )
-			horizontal_line++;
-			
-			if(){
-				if(arr[N][N] == )
-				diagonal_line_leftside++;
-			}
-			
-			if(){
-				if(arr[N][N] == )
-				diagonal_line_rightside++;
-			}
+	for(y=0; y<N; y++){
+		for(x=0; x<N; x++){
+			if(arr[y][x] == 0)
+			break;
+			else if(x == N-1)
+			line++;
 		}
-		if(horizontal_line == M){
-			bingo++;
-		}
+	}
+		
+	for(y=0; y<N; y++){
+		for(x=0; x<N; x++){
+			if(arr[x][y] == 0)
+			break;
+			else if(x == N-1)
+			line++;
+	    }
+		    
+	}
+	
+	for(xy=0; xy<N; xy++){
+		if(arr[xy][xy] == 0)
+		break;
+		else if(xy == N-1)
+		line++;
+	    }
+	    
+	for(xy=N-1; xy>=0; xy--){
+		if(arr[xy][xy] == 0)
+		break;
+		else if(xy == 0)
+		line++;
 	}  
-	
-	for(y=0; y<num; y++){
-		vertical_line = 0;
-		for(x=0; x<num; x++){
-			if(arr[N][N] == )
-			vertical_line++;
-		}
-		if(vertical_line == M){
-			bingo++;
-		}
-	}
+	return line;  
 }
 
-	
-
-	return 0;
-}
