@@ -4,92 +4,74 @@
 
 #define N 5
 #define N2 25
+#define M 3
+
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
-
-
-void initiate_bingo(); //빙고 테이블을 초기에 만들어줌 
-void set_rand(int *arr);
-void swap(int *i, int *j);
-void print_bingo(int arr[5][5]); //빙고 테이블 현재 상황을 화면에 출력 
-void erase_bingo(int arr[5][5], int number); //선택받은 숫자를 지움 
+void initiate_bingo(int bingo[5][5]);
+void erase_bingo(int bingo[5][5], int number); //선택받은 숫자를 지움 
 void count_bingo(int bingo_byMe[5][5], int bingo_byCom[5][5]); //빙고 테이블이 채운 가로/세로/대각선 줄 수를 계산해서 반환 
 void print_winner(int winner); //빙고 게임 승자를 출력 
-int get_number_byMe(int n); //내가 빙고 번호 입력 선택 
-int get_number_byCom(int n); //컴퓨터가 임의로 빙고 번호 선택 
-int check_bingo(int arr[5][5]); //가로, 세로, 오른쪽대각선, 왼쪽대각선 체크 
-int count = 0;
+int get_number_byMe(int num); //내가 빙고 번호 입력 선택 
+int get_number_byCom(int num); //컴퓨터가 임의로 빙고 번호 선택 
+int check_bingo(int bingo[5][5]); //가로, 세로, 오른쪽대각선, 왼쪽대각선 체크 
 int checked[25];
+int count=0;
 int bingo_byMe [5][5]; // 나의 빙고 테이블 
 int bingo_byCom [5][5]; //컴퓨터의 빙고 테이블 
 
+
 int main(void){
-	int number, winner_Me, winner_Com;
-	int bingo_byMe [5][5]; // 나의 빙고 테이블 
-	int bingo_byCom [5][5]; //컴퓨터의 빙고 테이블 
-	initiate_bingo(); 
+    int bingo[5][5];
 	
-    do{
-    	printf("내 빙고판\n");
-    	print_bingo(bingo_byMe);
-    	number = get_number_byMe(number);
-    	erase_bingo(bingo_byMe, number);
-    	erase_bingo(bingo_byCom, number);
-    	number = get_number_byCom(number);
-    	erase_bingo(bingo_byCom, number);
-    	erase_bingo(bingo_byMe, number);
-    	
-    	winner_Me = check_bingo(bingo_byMe);
-    	winner_Com = check_bingo(bingo_byCom);
-    	
-	}while((winner_Me == 0) && (winner_Com == 0)); //0은 아직 빙고 완성이 안 된 것을 의미
-	
-    printf("내 빙고판\n");
-	print_bingo(bingo_byMe);
-	printf("컴퓨터 빙고판\n"); 
-	print_bingo(bingo_byCom);   
-    
-	return 0;   
+	printf("빙고 게임 규칙\n");
+	printf("1. 1~25까지의 숫자를 입력하세요\n");
+	printf("2. 빙고가 5개가 되면 승리\n");
+	printf("준비되셨나요?\n");
+	  
+	return 0; 
 }
 
-void swap(int *i, int *j){
-	int temp;
-	temp = *i;
-	*i = *j;
-	*j = temp;
-}
-
-void set_rand(int *arr){
-	int n;
+void initiate_bingo(int bingo[5][5]){
+	int x=0, y=0;
+	int temp[50];
+	int tem;
+	long seed;
 	
-	do{
-		arr[n]= n + 1;
-	}while(n<N2);
+	seed=time(NULL);
+	srand(seed);
 	
-	do{
-		swap(&arr[n], &arr[rand()%25]);
-	}while(n<N2);
-		
-}
-void initiate_bingo(){
-	srand((unsigned)time(NULL));
-	set_rand((int*)bingo_byMe);
-	set_rand((int*)bingo_byCom);
-}
-
-
-
-void print_bingo(int arr[N][N]){
-	int x,y;
-	
-	for(x=0; x<N; x++){
-		for(y=0; y<N; y++){
-			printf("%d",arr[x][y]);
+	for(x=0; x<5; x++){
+		for(y=0; y<5; y++){
+			bingo[x][y]=0;
 		}
-	    printf("\n\n");
+		
+    for(x=0; x<5; x++){
+    	temp[x]=0;
 	}
-}
 	
-int get_number_byMe(int n){
+	for(x=0; x<5; x++){
+		for(y=0; y<5; y++){
+			while(1){
+				tem=rand()%25+1;
+				if(temp[tem]==0){
+					bingo[x][y]=tem;
+					temp[tem]=1;
+					break;
+				}
+			}
+		}	
+    }
+
+    	for(x=0; x<5; x++){
+		  for(y=0; y<5; y++){
+		    printf("%d", bingo[x][y]);
+		    }
+		printf("\n");
+        }
+    }
+}
+
+int get_number_byMe(int num){
 	int number;
 	int x, error;
     do{
@@ -117,7 +99,7 @@ int get_number_byMe(int n){
     return number;
 }
 
-int get_number_byCom(int n){
+int get_number_byCom(int num){
 	int number;
 	int x, error;
 	
@@ -141,13 +123,13 @@ int get_number_byCom(int n){
 	return number;
 }
 	
-		
-void erase_bingo(int arr[N][N], int input_number){
+
+void erase_bingo(int arr[N][N], int number){
 	int x,y;
 	
 	for(x=0; x<N; x++){
 		for(y=0; y<N; y++){
-			if(arr[x][y] == input_number){
+			if(arr[x][y] == number){
 				arr[x][y] = -1;
 			}
 		}
@@ -175,10 +157,10 @@ int check_bingo(int arr[5][5]){
 			}
 		}
 		
-		if(rows==N){
+		if(rows==M){
 			check++;
 		}
-		if(column==N){
+		if(column==M){
 			check++;
 		}
 		
@@ -189,10 +171,10 @@ int check_bingo(int arr[5][5]){
 			crossright++;
 		}
 		
-		if(crossleft==N){
+		if(crossleft==M){
 			check++;
 		}
-		if(crossright==N){
+		if(crossright==M){
 			check++;
 		}
 	} 
