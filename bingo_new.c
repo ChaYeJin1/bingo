@@ -1,212 +1,836 @@
+
 #include <stdio.h>
+
+
 #include <stdlib.h>
+
+
 #include <time.h>
 
-#define N 5
-#define N2 25
-#define M 3
 
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
-void initiate_bingo(int bingo[5][5]);
-void erase_bingo(int bingo[5][5], int number); //선택받은 숫자를 지움 
-void count_bingo(int bingo_byMe[5][5], int bingo_byCom[5][5]); //빙고 테이블이 채운 가로/세로/대각선 줄 수를 계산해서 반환 
-void print_winner(int winner); //빙고 게임 승자를 출력 
-int get_number_byMe(int num); //내가 빙고 번호 입력 선택 
-int get_number_byCom(int num); //컴퓨터가 임의로 빙고 번호 선택 
-int check_bingo(int bingo[5][5]); //가로, 세로, 오른쪽대각선, 왼쪽대각선 체크 
-int checked[25];
-int count=0;
-int bingo_byMe [5][5]; // 나의 빙고 테이블 
-int bingo_byCom [5][5]; //컴퓨터의 빙고 테이블 
+#include <windows.h>
 
 
-int main(void){
-    int bingo[5][5];
-	
-	printf("빙고 게임 규칙\n");
-	printf("1. 1~25까지의 숫자를 입력하세요\n");
-	printf("2. 빙고가 5개가 되면 승리\n");
-	printf("준비되셨나요?\n");
-	  
-	return 0; 
-}
 
-void initiate_bingo(int bingo[5][5]){
-	int x=0, y=0;
-	int temp[50];
-	int tem;
-	long seed;
-	
-	seed=time(NULL);
-	srand(seed);
-	
-	for(x=0; x<5; x++){
-		for(y=0; y<5; y++){
-			bingo[x][y]=0;
-		}
-		
-    for(x=0; x<5; x++){
-    	temp[x]=0;
-	}
-	
-	for(x=0; x<5; x++){
-		for(y=0; y<5; y++){
-			while(1){
-				tem=rand()%25+1;
-				if(temp[tem]==0){
-					bingo[x][y]=tem;
-					temp[tem]=1;
-					break;
-				}
-			}
-		}	
-    }
 
-    	for(x=0; x<5; x++){
-		  for(y=0; y<5; y++){
-		    printf("%d", bingo[x][y]);
-		    }
-		printf("\n");
-        }
-    }
-}
+#define MAX 5
 
-int get_number_byMe(int num){
-	int number;
-	int x, error;
-    do{
-            error = 0;  	
-			printf("1~25까지의 숫자를입력하시오 : \n");
-			scanf("%d", &number); 
-			 if(number<1 || number>25){
-			 error = 1;
-			}
-			if(error == 0){
-	    	for(x=0; x<count; x++){
-	    		if(checked[x] == number){
-	    		printf("이미 입력한 숫자입니다\n");	
-			    error = 1;
-			    break;
-	        	}    
-			}
-	}
-	
-	checked[count++] = number;
-	printf("사용자가 %d를 선택하였습니다 : \n", number);
-	
-    }while(error == 1);
-    
-    return number;
-}
 
-int get_number_byCom(int num){
-	int number;
-	int x, error;
-	
-	do{
-	    number = rand() % 25 + 1;
-	    if(error == 0){
-	    	for(x=0; x<count; x++){
-	    		if(checked[x] == number){
-	    		printf("이미 입력한 숫자입니다\n");
-			    error = 1;
-			    break;
-	        	}    
-			}
-		}
-		
-	}while(error == 1);
-	
-	checked[count++] = number;
-	printf("컴퓨터가 %d를 선택하였습니다 : \n", number);
-	
-	return number;
-}
-	
+#define WHITE 15
 
-void erase_bingo(int arr[N][N], int number){
-	int x,y;
-	
-	for(x=0; x<N; x++){
-		for(y=0; y<N; y++){
-			if(arr[x][y] == number){
-				arr[x][y] = -1;
-			}
-		}
-	}
-}
 
-int check_bingo(int arr[5][5]){
-	int i, j;
-	int rows = 0;
-	int column = 0;
-	int crossleft = 0;
-	int crossright = 0;
-	int check = 0;
-	
-	for(i=0; i<N; i++){
-		rows=0;
-		column=0;
-		
-		for(j=0; j<N; j++){
-			if(bingo_byMe[i][j]==0){
-				rows++;
-			}
-			if(bingo_byMe[j][i]==0){
-				column++;
-			}
-		}
-		
-		if(rows==M){
-			check++;
-		}
-		if(column==M){
-			check++;
-		}
-		
-		if(bingo_byMe[i][i]==0){
-			crossleft++;
-		}
-		if(bingo_byCom[N-1-i][i]==0){
-			crossright++;
-		}
-		
-		if(crossleft==M){
-			check++;
-		}
-		if(crossright==M){
-			check++;
-		}
-	} 
-	return check;
-}
+#define YELLOW 14
 
-void count_bingo(int bingo_byMe[5][5], int bingo_byCom[5][5]){
-	int i,j;
-	int count = 1;
-	for(i=0; i<N; i++){
-		for(j=0; j<N; j++){
-			bingo_byMe[i][j]=count;
-			bingo_byCom[i][j]=count;
-			count++;
-		}
-	}
-}
 
-void print_winner(int winner){
-	switch(winner){
-		case 1 :
-			printf("사용자가 이겼습니다\n");
-			break;
-		case 2 :
-		    printf("컴퓨터가 이겼습니다\n");
-		    break;
-		case 3 :
-		    printf("비겼습니다\n");
-			break;
-		default :
-		    printf("에러입니다\n");
-			break;			
-	}
-}
+9. 
+
+
+10. 
+
+void textcolor(int color_number); // 텍스트 칼라 출력
+
+void gotoxy(int x, int y); // 좌표 이동
+
+int baserand(int x, int y); // 랜덤 범위 지정
+
+
+14. 
+
+
+15.// 초기값 설정
+
+
+16.void InitCount(int Player[MAX][MAX] , int Com[MAX][MAX]);
+
+
+17. 
+
+
+18.// MAP 설정
+
+
+19.void MixMAP(int Player[MAX][MAX]);
+
+
+20.int SearchMAP(int Player[MAX][MAX] ,int Num);
+
+
+21.void printMAP(int Player[MAX][MAX]);
+
+
+22.int CheckMAP(int Player[MAX][MAX]);
+
+
+23. 
+
+
+24.// 승리조건
+
+
+25.void Winner(int flag , int Player[MAX][MAX],int Com[MAX][MAX]);
+
+
+26. 
+
+
+27. 
+
+
+28. 
+
+
+29. 
+
+
+30.int main(void){
+
+
+31. 
+
+
+32.        int Player[MAX][MAX];
+
+
+33.        int Com[MAX][MAX];
+
+
+34.        int playerChk,comChk;
+
+
+35.        int Num;        
+
+
+36. 
+
+
+37.        InitCount(Player,Com);
+
+
+38.        
+
+
+39.        MixMAP(Player);
+
+
+40. 
+
+
+41.        while(1){
+
+
+42.                gotoxy(0,0);
+
+
+43. 
+
+
+44.                // 컴퓨터들 출력
+
+
+45.                textcolor(WHITE);
+
+
+46.                printf(" ====== Player ====== \n");
+
+
+47.                printMAP(Player);
+
+
+48.                textcolor(WHITE);
+
+
+49.                printf(" ===== Computer ===== \n");
+
+
+50.                printMAP(Com);          
+
+
+51. 
+
+
+52.                textcolor(WHITE);
+
+
+53.                printf(" > ");
+
+
+54.                scanf("%d",&Num);
+
+
+55. 
+
+
+56.                if( SearchMAP(Player,Num) == 0){
+
+
+57.                        printf("잘못입력하셨습니다. \n");                      
+
+
+58.                        system("pause");
+
+
+59.                        system("cls");
+
+
+60.                        continue;
+
+
+61.                }
+
+
+62. 
+
+
+63.                SearchMAP(Com,Num);
+
+
+64. 
+
+
+65.                // 컴퓨터 턴
+
+
+66.                while( 1 ){
+
+
+67.                        Num = baserand(1,MAX*MAX); 
+
+
+68.                        if(SearchMAP(Com, Num) ==1 ){
+
+
+69.                                SearchMAP(Player, Num);
+
+
+70.                                break;
+
+
+71.                        }
+
+
+72.                }
+
+
+73. 
+
+
+74.                playerChk = CheckMAP(Player);
+
+
+75.                comChk = CheckMAP(Com);
+
+
+76. 
+
+
+77.                printf("Player Check = %d \n",playerChk);
+
+
+78.                printf("Com Check = %d \n",comChk);
+
+
+79. 
+
+
+80.                if(playerChk >= MAX && comChk >= MAX){
+
+
+81.                        if( playerChk > comChk){
+
+
+82.                                Winner(0,Player,Com); // 내가 이겼을 때
+
+
+83.                        }else if( playerChk < comChk) {
+
+
+84.                                Winner(1,Player,Com); // 내가 졌을 때
+
+
+85.                        }else{
+
+
+86.                                Winner(2,Player,Com); // 배겼을 때
+
+
+87.                        }
+
+
+88.                }else  if(playerChk >= MAX){
+
+
+89.                        Winner(0,Player,Com); // 내가 이겼을 때
+
+
+90.                }else  if(comChk >= MAX){
+
+
+91.                        Winner(1,Player,Com); // 내가 졌을 때
+
+
+92.                }
+
+
+93. 
+
+
+94.                system("pause");
+
+
+95.                system("cls");
+
+
+96.        }
+
+
+97.        return 0;
+
+
+98.}
+
+
+99. 
+
+
+100.// 텍스트 칼라 출력
+
+
+101.void textcolor(int color_number)
+
+
+102.{
+
+
+103. SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),color_number);
+
+
+104.};
+
+
+105.// 좌표 이동
+
+
+106.void gotoxy(int x, int y)
+
+
+107.{
+
+
+108.     COORD Cur;
+
+
+109.     Cur.X=x;
+
+
+110.     Cur.Y=y;
+
+
+111.     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),Cur);
+
+
+112.}
+
+
+113.// 랜덤 범위 지정
+
+
+114.int baserand(int x, int y){
+
+
+115. 
+
+
+116.        static int z = 0;
+
+
+117.        int tmp;
+
+
+118.        if(z==0){
+
+
+119.                srand((int)time(NULL));
+
+
+120.                rand();rand();rand();rand();
+
+
+121.                srand(rand());
+
+
+122.                z=1;
+
+
+123.        }
+
+
+124. 
+
+
+125.        tmp = rand()%(y-x+1)+x;
+
+
+126.        return tmp;
+
+
+127.}
+
+
+128. 
+
+
+129.void printMAP(int Player[MAX][MAX]){
+
+
+130.        int i,j;
+
+
+131.        for(i=0;i<MAX;i++){
+
+
+132.                for(j=0;j<MAX;j++){
+
+
+133.                        if(Player[i][j] == 0){
+
+
+134.                                textcolor(YELLOW);
+
+
+135.                                printf("%4s","♥");
+
+
+136. 
+
+
+137.                        }else{
+
+
+138.                                textcolor(WHITE);
+
+
+139.                                printf("%4d",Player[i][j]);
+
+
+140.                        }
+
+
+141.                }
+
+
+142.                printf("\n");
+
+
+143.        }
+
+
+144.}
+
+
+145. 
+
+
+146. 
+
+
+147.void MixMAP(int Player[MAX][MAX]){
+
+
+148. 
+
+
+149.        int i;
+
+
+150.        int x1,y1;
+
+
+151.        int x2,y2;
+
+
+152.        int tmp;
+
+
+153. 
+
+
+154.        printMAP(Player);
+
+
+155. 
+
+
+156.        for(i=0;i< 10*MAX ;i++){
+
+
+157. 
+
+
+158.                x1 = baserand(0,MAX-1);
+
+
+159.                y1 = baserand(0,MAX-1);
+
+
+160. 
+
+
+161.                x2 = baserand(0,MAX-1);
+
+
+162.                y2 = baserand(0,MAX-1);
+
+
+163. 
+
+
+164.                // 두 값을 서로 바꾸는 코드
+
+
+165.                tmp = Player[x1][y1];
+
+
+166.                Player[x1][y1] = Player[x2][y2];
+
+
+167.                Player[x2][y2] = tmp;
+
+
+168. 
+
+
+169.                gotoxy(0,0);
+
+
+170.                printMAP(Player);               
+
+
+171.        
+
+
+172.                Sleep(10);
+
+
+173.        }
+
+
+174.        system("pause");
+
+
+175.        system("cls");
+
+
+176.        
+
+
+177.}
+
+
+178. 
+
+
+179.int SearchMAP(int Player[MAX][MAX] ,int Num){
+
+
+180. 
+
+
+181.        int i,j;
+
+
+182.        int flag = 0;
+
+
+183. 
+
+
+184.        for(i=0;i<MAX;i++){
+
+
+185.                for(j=0;j<MAX;j++){
+
+
+186.                        if(Player[i][j] == Num){
+
+
+187.                                flag = 1;
+
+
+188.                                Player[i][j] = 0;
+
+
+189.                        }
+
+
+190.                }
+
+
+191.        }
+
+
+192. 
+
+
+193.        return flag;
+
+
+194.}
+
+
+195. 
+
+
+196.int CheckMAP(int Player[MAX][MAX]){
+
+
+197.        int i,j;
+
+
+198.        int rowsFlag = 0;
+
+
+199.        int columnFlag = 0;
+
+
+200.        int crossleftFlag = 0;
+
+
+201.        int crossrightFlag = 0;
+
+
+202.        int check = 0;          
+
+
+203. 
+
+
+204.        for(i=0;i<MAX;i++){
+
+
+205.                rowsFlag = 0;
+
+
+206.                columnFlag = 0;
+
+
+207. 
+
+
+208.                for(j=0;j<MAX;j++){
+
+
+209.                        if(Player[i][j] == 0){
+
+
+210.                                rowsFlag++;
+
+
+211.                        }
+
+
+212.                        if(Player[j][i] == 0){
+
+
+213.                                columnFlag++;
+
+
+214.                        }
+
+
+215.                }
+
+
+216.                // 가로체크
+
+
+217.                if(rowsFlag == MAX){
+
+
+218.                        check++;
+
+
+219.                }
+
+
+220.                // 세로체크
+
+
+221.                if(columnFlag == MAX){
+
+
+222.                        check++;
+
+
+223.                }
+
+
+224.                // 대각선 왼쪽에서 오른쪽
+
+
+225.                if(Player[i][i] == 0){
+
+
+226.                        crossleftFlag++;
+
+
+227.                }
+
+
+228.                // 대각선 오른쪽에서 왼쪽
+
+
+229.                if(Player[MAX-1-i][i] == 0){
+
+
+230.                        crossrightFlag++;
+
+
+231.                }
+
+
+232.        }
+
+
+233. 
+
+
+234.        if(crossleftFlag == MAX){
+
+
+235.                check++;
+
+
+236.        }
+
+
+237. 
+
+
+238.        if(crossrightFlag == MAX){
+
+
+239.                check++;
+
+
+240.        }
+
+
+241. 
+
+
+242.        return check;
+
+
+243.}
+
+
+244. 
+
+
+245.void Winner(int flag , int Player[MAX][MAX],int Com[MAX][MAX]){
+
+
+246.        gotoxy(0,0);
+
+
+247.        textcolor(WHITE);
+
+
+248.        printf(" ====== Player ====== \n");
+
+
+249.        printMAP(Player);
+
+
+250.        textcolor(WHITE);
+
+
+251.        printf(" ===== Computer ===== \n");
+
+
+252.        printMAP(Com);          
+
+
+253.        gotoxy(0,MAX*2+5);
+
+
+254.        switch(flag){
+
+
+255.                case 0:
+
+
+256.                        printf("당신이 이겼습니다. \n");
+
+
+257.                        break;
+
+
+258.                case 1:
+
+
+259.                        printf("당신이 졌습니다. \n");
+
+
+260.                        break;
+
+
+261.                case 2:
+
+
+262.                        printf("비겼습니다. \n");
+
+
+263.                        break;
+
+
+264.        }
+
+
+265.        exit(0);
+
+
+266. 
+
+
+267.}
+
+
+268. 
+
+
+269.void InitCount(int Player[MAX][MAX] , int Com[MAX][MAX]){
+
+
+270. 
+
+
+271.        int i,j;
+
+
+272.        int count =1 ;
+
+
+273.        for(i=0;i<MAX;i++){
+
+
+274.                for(j=0;j<MAX;j++){
+
+
+275.                        Player[i][j] = count;
+
+
+276.                        Com[i][j] = count;
+
+
+277.                        count++;
+
+
+278.                }
+
+
+279.        }
+
+
+280.}
 
