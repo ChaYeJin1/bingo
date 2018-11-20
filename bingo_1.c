@@ -10,16 +10,16 @@ void initiate_bingo(); //빙고 테이블을 초기에 만들어줌
 void set_rand(int *arr);
 void swap(int *i, int *j);
 void print_bingo(int arr[5][5]); //빙고 테이블 현재 상황을 화면에 출력 
-void erase_bingo(int arr[5][5], int number);
-void print_winner(int winner);
+void erase_bingo(int arr[5][5], int number); //선택받은 숫자를 지움 
 void count_bingo(int bingo_byMe[5][5], int bingo_byCom[5][5]); //빙고 테이블이 채운 가로/세로/대각선 줄 수를 계산해서 반환 
+void print_winner(int winner); //빙고 게임 승자를 출력 
 int get_number_byMe(int n); //내가 빙고 번호 입력 선택 
 int get_number_byCom(int n); //컴퓨터가 임의로 빙고 번호 선택 
-int check_bingo(int arr[5][5]);
+int check_bingo(int arr[5][5]); //가로, 세로, 오른쪽대각선, 왼쪽대각선 체크 
 int count = 0;
 int checked[25];
-int bingo_byMe [5][5];
-int bingo_byCom [5][5]; 
+int bingo_byMe [5][5]; // 나의 빙고 테이블 
+int bingo_byCom [5][5]; //컴퓨터의 빙고 테이블 
 
 int main(void){
 	int number, winner_Me, winner_Com;
@@ -103,12 +103,13 @@ int get_number_byMe(int n){
 			    break;
 	        	}    
 			}
-	}while(error == 1);
+	}
 	
 	checked[count++] = number;
 	printf("사용자가 %d를 선택하였습니다 : \n", number);
 	
-    }
+    }while(error == 1);
+    
     return number;
 }
 
@@ -122,6 +123,7 @@ int get_number_byCom(int n){
 	    if(error == 0){
 	    	for(x=0; x<count; x++){
 	    		if(checked[x] == number){
+	    		printf("이미 입력한 숫자입니다");
 			    error = 1;
 			    break;
 	        	}    
