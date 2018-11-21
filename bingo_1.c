@@ -6,26 +6,25 @@
 #define M 1//빙고 한 개 완성이 목표 
 
 /* run this program using the console pauser or add your own getch, system("pause") or input loop */
-int table;
+int table; 
 int mtable[5][5]; //나의 빙고 테이블 
 int ctable[5][5]; //컴퓨터의 빙고 테이블 
 int check_bingo(int table[5][5]); //조건에 따라 가로, 세로, 대각선 확인 
-int count=0;
-
+int count=0; //카운트 초기화 
 
 void main(){
 int i, j; 
 //table[5][5];
-int mtable[5][5];
-int ctable[5][5];
-int num = 0; 
-int cnum = 0; 
-int count=0; 
+int mtable[5][5]; //나의 빙고 테이블 
+int ctable[5][5]; //컴퓨터의 빙고 테이블 
+int num = 0; //내가 선택한 숫자  
+int cnum = 0; //컴퓨터가 선택한 숫자 
+int count=0; //카운트 초기화 
+int line=0; //선택된 숫자가 0으로 바뀌는 상황에서 가로,세로,대각선을 확인하였을 때, 0으로 채워진 줄(빙고)  
+int my=0; //내 빙고 테이블에서 sum을 확인한 뒤 1값을 넣어 프로그램 종료시키기 위함 
+int com=0; //컴퓨터 빙고 테이블에서 sum을 확인한 뒤 1값을 넣어 프로그램 종료시키기 위함 
+int ss=0; 
 int breakpoint=0;
-int line=0;
-int my=0;
-int com=0;
-int ss=0;
 
 printf("----예진 빙고 게임 룰----\n");
 printf("1. 선택된 숫자는 0으로 변환\n");
@@ -63,7 +62,7 @@ for (i = 0; i < 5; i++) {
       printf("%d ", ctable[i][j]); 
          } 
       printf("\n"); 
-      } 
+} 
       
 while(1){
    breakpoint = 0;
@@ -81,8 +80,8 @@ while(1){
          }
          if(count>=1)
          break;
-      }
    }
+}
    
    if(breakpoint==0){
       printf("이미 선택한 숫자입니다! 다시 입력하세요\n");
@@ -103,27 +102,27 @@ while(1){
          
          if(mtable[i][j] == cnum){
             mtable[i][j] = 0;
-         }
       }
    }
+}
    
 printf("---<나의 빙고판>---\n");   
 for (i = 0; i < 5; i++) { 
    for (j = 0; j < 5; j++) { 
       printf("\t"); 
       printf("%d ", mtable[i][j]); 
-     } 
+    } 
       printf("\n"); 
-   } 
+} 
 
 printf("---<컴퓨터의 빙고판>---\n");       
 for (i = 0; i < 5; i++) { 
    for (j = 0; j < 5; j++) { 
       printf("\t"); 
       printf("%d ", ctable[i][j]); 
-     } 
+    } 
       printf("\n"); 
-     } 
+} 
 
 ss++;
    my=check_bingo(mtable);
@@ -135,16 +134,16 @@ ss++;
    if((my==1)||(com==1)){
    printf("이긴 횟수: %d번!\n",ss);
    break;
-}
-}
+      }
+   }
 }
 
 int check_bingo(int table[5][5]){
-   int i, j;
-   int sum=0;
-   int line=0;
-   
-   
+	
+int i, j; //가로, 세로, 대각선 표현하기 위함 
+int sum=0; //숫자를 입력해가면서 해당 숫자를 0으로 변환하는데, 그 때 가로,세로,대각선의 합 
+int line=0; 
+      
 //가로 줄 확인   
 for (j = 0; j < 5; j++) { 
    sum = 0;
@@ -170,7 +169,7 @@ sum=0;
 for (i = 0; i < 5; i++) { 
    sum += table[i][i]; }
    if(sum==0){
-    line++;
+      line++;
    }
    
 sum=0;
@@ -179,7 +178,7 @@ for (i = 0; i < 5; i++) {
    if(sum==0){
     line++;
    }
-   //++
+   
    if(line>=1)
       return 1;
    else
